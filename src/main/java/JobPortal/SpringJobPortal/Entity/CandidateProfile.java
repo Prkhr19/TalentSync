@@ -25,7 +25,8 @@ public class CandidateProfile {
 
     private String skills;
 
-    private String resumeUrl;
+    @Column(name = "resume_url")
+    private String resumeFileName;
 
     @Column
     private String experience;
@@ -36,7 +37,13 @@ public class CandidateProfile {
     @Column
     private String location;
 
+    private String preferredLocation;
+
     private String linkedInUrl;
+
+    private String githubUrl;
+
+    private String portfolioUrl;
 
     private String totalExperience;
 

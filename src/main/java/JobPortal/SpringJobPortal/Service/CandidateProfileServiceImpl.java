@@ -11,9 +11,12 @@ import JobPortal.SpringJobPortal.Repository.JobApplicationRepository;
 import JobPortal.SpringJobPortal.Security.CurrentUserAuth.CurrentUserService;
 import JobPortal.SpringJobPortal.Service.Impl.CandidateProfileService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.core.io.Resource;
 import org.springframework.security.access.AccessDeniedException;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
@@ -23,14 +26,24 @@ public class CandidateProfileServiceImpl implements CandidateProfileService {
     private final CandidateProfileRepository candidateProfileRepository;
     private final CurrentUserService currentUserService;
     private final JobApplicationRepository jobApplicationRepository;
+    private final ResumeStorageService resumeStorageService;
 
 
     @Override
-    public CandidateProfileReqDto updateProfile(CandidateProfileReqDto candidateProfileReqDto) {
+    public CandidateProfileReqDto updateProfile(CandidateProfileReqDto candidateProfileReqDto, MultipartFile resume) {
 
 
         User user = currentUserService.getCurrentUser();
         CandidateProfile candidateProfile = candidateProfileRepository.findByUserUserId(user.getUserId()).orElseThrow(() -> new UsernameNotFoundException("User not found"));
+
+        if (resume != null && !resume.isEmpty()) {
+            if (candidateProfile.getResumeFileName() != null) {
+                resumeStorageService.deleteResume(candidateProfile.getResumeFileName());
+            }
+            candidateProfile.setResumeFileName(resumeStorageService.storeResume(resume, user.getUserId()));
+        } else if (candidateProfile.getResumeFileName() == null) {
+            throw new IllegalArgumentException("Resume PDF is required");
+        }
 
         candidateProfile.setUser(candidateProfile.getUser());
         candidateProfile.setName(candidateProfileReqDto.getName());
@@ -39,7 +52,6 @@ public class CandidateProfileServiceImpl implements CandidateProfileService {
         candidateProfile.setLocation(candidateProfileReqDto.getLocation());
         candidateProfile.setExperience(candidateProfileReqDto.getExperience());
         candidateProfile.setEducation(candidateProfileReqDto.getEducation());
-        candidateProfile.setResumeUrl(candidateProfileReqDto.getResumeUrl());
         candidateProfile.setLinkedInUrl(candidateProfileReqDto.getLinkedInUrl());
         candidateProfile.setTotalExperience(candidateProfileReqDto.getTotalExperience());
         candidateProfile.setCurrentCompany(candidateProfileReqDto.getCurrentCompany());
@@ -56,7 +68,7 @@ public class CandidateProfileServiceImpl implements CandidateProfileService {
         return CandidateProfileReqDto.builder()
                 .name(candidateProfile.getName())
                 .phoneNo(candidateProfile.getPhoneNo())
-                .resumeUrl(candidateProfile.getResumeUrl())
+                .resumeFileName(candidateProfile.getResumeFileName())
                 .location(candidateProfile.getLocation())
                 .experience(candidateProfile.getExperience())
                 .skills(candidateProfile.getSkills())
@@ -71,6 +83,24 @@ public class CandidateProfileServiceImpl implements CandidateProfileService {
                 .expectedCtc(candidateProfile.getExpectedCtc())
                 .noticePeriod(candidateProfile.getNoticePeriod())
                 .build();
+    }
+
+    @Override
+    public Resource getResume() {
+        User user = currentUserService.getCurrentUser();
+
+        if (user.getRole() != RoleType.CANDIDATE) {
+            throw new AccessDeniedException("Unauthorized access");
+        }
+
+        CandidateProfile candidateProfile = candidateProfileRepository.findByUserUserId(user.getUserId())
+                .orElseThrow(() -> new UsernameNotFoundException("User not found"));
+
+        if (candidateProfile.getResumeFileName() == null) {
+            throw new BadCredentialsException("Resume not found");
+        }
+
+        return resumeStorageService.loadResume(candidateProfile.getResumeFileName());
     }
 
     @Override

@@ -2,14 +2,16 @@ package JobPortal.SpringJobPortal.Service.Impl;
 
 import JobPortal.SpringJobPortal.Dto.CandidateApplicationResposeDto;
 import JobPortal.SpringJobPortal.Dto.CandidateProfileReqDto;
-import org.springframework.stereotype.Service;
+import org.springframework.core.io.Resource;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
-@Service
 public interface CandidateProfileService {
 
-    public CandidateProfileReqDto updateProfile(CandidateProfileReqDto candidateProfileReqDto);
+    CandidateProfileReqDto updateProfile(CandidateProfileReqDto candidateProfileReqDto, MultipartFile resume);
+
+    Resource getResume();
 
     List<CandidateApplicationResposeDto> myApplication();
 }

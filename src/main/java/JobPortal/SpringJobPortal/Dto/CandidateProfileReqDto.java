@@ -25,8 +25,7 @@ public class CandidateProfileReqDto {
     @NotBlank
     private String skills;
 
-    @NotBlank
-    private String resumeUrl;
+    private String resumeFileName;
 
     @NotBlank
     private String experience;
