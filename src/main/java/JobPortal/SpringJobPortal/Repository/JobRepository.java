@@ -15,7 +15,7 @@ public List<Job>findByStatus(JobStatus status);
 boolean existsByTitleAndCompanyAndLocation(String title, Company company, String location);
 
 
-List<Job> findByRecruiter_Id(Long recruiterId);
+List<Job> findByCreatedBy_UserId(Long userId);
 
 
 

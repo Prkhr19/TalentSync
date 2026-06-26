@@ -1,7 +1,5 @@
 package JobPortal.SpringJobPortal.Dto;
 
-import JobPortal.SpringJobPortal.Entity.RecruiterProfile;
-import JobPortal.SpringJobPortal.Entity.type.JobStatus;
 import JobPortal.SpringJobPortal.Entity.type.Jobtype;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;

@@ -36,6 +36,24 @@ public class CandidateProfile {
     @Column
     private String location;
 
+    private String linkedInUrl;
+
+    private String totalExperience;
+
+    private String currentCompany;
+
+    private String currentDesignation;
+
+    private String highestQualification;
+
+    private Integer graduationYear;
+
+    private Double currentCtc;
+
+    private Double expectedCtc;
+
+    private String noticePeriod;
+
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
     private User user;

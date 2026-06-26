@@ -81,7 +81,12 @@ public class JobApplicationSeviceImpl implements JobApplicationSevice {
     }
 
     private void validateCandidateProfile(CandidateProfile profile) {
-        if (profile.getPhoneNo() == null || profile.getResumeUrl() == null || profile.getSkills() == null || profile.getEducation() == null) {
+        if (profile.getPhoneNo() == null || profile.getResumeUrl() == null || profile.getSkills() == null
+                || profile.getEducation() == null || profile.getLinkedInUrl() == null
+                || profile.getTotalExperience() == null || profile.getCurrentCompany() == null
+                || profile.getCurrentDesignation() == null || profile.getHighestQualification() == null
+                || profile.getGraduationYear() == null || profile.getCurrentCtc() == null
+                || profile.getExpectedCtc() == null || profile.getNoticePeriod() == null) {
             throw new IllegalArgumentException("Complele your profile to start applying");
         }
     }

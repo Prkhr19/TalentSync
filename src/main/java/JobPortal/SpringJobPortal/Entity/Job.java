@@ -56,9 +56,9 @@ public class Job {
     @JoinColumn(name = "company_id", nullable = false)
     private Company company;
 
-    @ManyToOne
-    @JoinColumn(name = "recruiter_id")
-    private RecruiterProfile recruiter;
+    @ManyToOne(optional = false)
+    @JoinColumn(name = "created_by", nullable = false)
+    private User createdBy;
 
 
 

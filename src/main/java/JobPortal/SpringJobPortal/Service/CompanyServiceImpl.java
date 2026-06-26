@@ -32,7 +32,7 @@ public class CompanyServiceImpl implements CompanyService {
         User user = currentUserService.getCurrentUser();
         RoleType role = user.getRole();
 
-       if (role != RoleType.RECRUITER){
+       if (role != RoleType.ADMIN){
            throw new AccessDeniedException("Unauthorized access");
        }
 

@@ -38,7 +38,6 @@ public class SpringWebSecurity {
                         .requestMatchers("/auth/**").permitAll()
                         .requestMatchers( "/jobs/**").permitAll()
                         .requestMatchers("/admin/**").hasRole("ADMIN")
-                        .requestMatchers("/recruiter/**").hasAnyRole("RECRUITER", "ADMIN")
                         .requestMatchers("/candidate/**").hasRole("CANDIDATE")
                         .anyRequest().authenticated())
                 .sessionManagement(session ->session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))

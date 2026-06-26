@@ -51,11 +51,11 @@ public class AuthServiceImpl implements AuthServices {
 
         User savedUser = userRepository.save(user);
 
-        if (savedUser.getRole() == RoleType.RECRUITER) {
+        if (savedUser.getRole() == RoleType.ADMIN) {
             RecruiterProfile recruiterProfile = new RecruiterProfile();
 
             recruiterProfile.setFullName(savedUser.getName());
-            recruiterProfile.setDesignation("Recruiter");
+            recruiterProfile.setDesignation("Admin");
             recruiterProfile.setUser(savedUser);
 
             recruiterProfileRepository.save(recruiterProfile);

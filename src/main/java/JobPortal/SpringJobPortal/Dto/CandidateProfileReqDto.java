@@ -37,5 +37,34 @@ public class CandidateProfileReqDto {
     @NotBlank
     private String location;
 
+    @NotBlank
+    private String linkedInUrl;
+
+    @NotBlank
+    private String totalExperience;
+
+    @NotBlank
+    private String currentCompany;
+
+    @NotBlank
+    private String currentDesignation;
+
+    @NotBlank
+    private String highestQualification;
+
+    @NotNull
+    @Positive
+    private Integer graduationYear;
+
+    @NotNull
+    @Positive
+    private Double currentCtc;
+
+    @NotNull
+    @Positive
+    private Double expectedCtc;
+
+    @NotBlank
+    private String noticePeriod;
 
 }

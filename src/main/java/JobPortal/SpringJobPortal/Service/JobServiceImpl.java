@@ -20,7 +20,6 @@ import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.DisabledException;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.security.access.AccessDeniedException;
@@ -31,8 +30,6 @@ import java.util.List;
 @RequiredArgsConstructor
 public class JobServiceImpl implements JobServices {
 
-    private final UserRepository userRepository;
-    private final RecruiterProfileRepository recruiterProfileRepository;
     private final JobRepository jobRepository;
     private final CurrentUserService currentUserService;
 
@@ -44,35 +41,24 @@ public class JobServiceImpl implements JobServices {
     @Transactional
     @Override
     public JobResponseDto createJob(@Valid JobRequestDto jobRequestDto) {
-        User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        User user = currentUserService.getCurrentUser();
 
-
-        RecruiterProfile recruiterProfile =
-                recruiterProfileRepository.findByUser(user)
-                        .orElseThrow(() -> new IllegalArgumentException("Recruiter profile not found"));
-        Company company = recruiterProfile.getCompany();
-
-        if (company == null) {
-            throw new IllegalArgumentException("Company cannot be null");
-        }
-
+        Company company = companyRepository.findFirstByRecruiters_User_UserId(user.getUserId())
+                .orElseThrow(() -> new IllegalArgumentException("Company not found"));
 
         Job job = Job.builder()
                 .title(jobRequestDto.getTitle())
                 .jobType(jobRequestDto.getJobType())
                 .description(jobRequestDto.getDescription())
                 .company(company)
-                .recruiter(recruiterProfile)
+                .createdBy(user)
                 .salary(jobRequestDto.getSalary())
                 .location(jobRequestDto.getLocation())
                 .experienceRequired(jobRequestDto.getExperienceRequired())
                 .status(JobStatus.OPEN)
                 .build();
 
-
-        job.setCompany(company);
-
-        boolean exists = jobRepository.existsByTitleAndCompanyAndLocation(jobRequestDto.getTitle(), recruiterProfile.getCompany(), jobRequestDto.getLocation());
+        boolean exists = jobRepository.existsByTitleAndCompanyAndLocation(jobRequestDto.getTitle(), company, jobRequestDto.getLocation());
 
         if (exists) {
             throw new IllegalArgumentException("Job already exists");
@@ -116,17 +102,7 @@ public class JobServiceImpl implements JobServices {
 
         RoleType role = user.getRole();
 
-        if (role == RoleType.ADMIN) {
-            //admin can update any job
-        } else if (role == RoleType.RECRUITER) {
-            RecruiterProfile currentRecruiter = recruiterProfileRepository.findByUserUserId(user.getUserId()).orElseThrow(() -> new BadCredentialsException("User not exist"));
-
-
-            if (!job.getRecruiter().getId().equals(currentRecruiter.getId()))
-                throw new DisabledException("You can update only your jobs");
-
-
-        } else {
+        if (role != RoleType.ADMIN) {
             throw new AccessDeniedException("Unauthorized access");
         }
 
@@ -161,14 +137,7 @@ public class JobServiceImpl implements JobServices {
         Job job = jobRepository.findById(id).orElseThrow(() -> new BadCredentialsException("Id not found"));
 
         RoleType role = user.getRole();
-        if (role == RoleType.ADMIN) {
-
-        } else if (role == RoleType.RECRUITER) {
-            if (!job.getRecruiter().getId().equals(user.getRecruiterProfile().getId())) {
-                throw new AccessDeniedException("You can only close your job openings ");
-            }
-
-        } else {
+        if (role != RoleType.ADMIN) {
             throw new AccessDeniedException("Unauthorized access");
         }
 
@@ -198,19 +167,8 @@ public class JobServiceImpl implements JobServices {
 
         RoleType role = user.getRole();
 
-        if (!(role == RoleType.ADMIN || role == RoleType.RECRUITER)) {
-
+        if (role != RoleType.ADMIN) {
             throw new AccessDeniedException("Unauthorized");
-
-        } else if (role == RoleType.RECRUITER || role == RoleType.ADMIN) {
-
-            if (!user.getRecruiterProfile().getId().equals(job.getRecruiter().getId())) {
-                throw new BadCredentialsException("You can update your own job");
-            }
-
-
-        } else {
-            throw new AccessDeniedException("Unauthorized access");
         }
 
         JobStatus status = job.getStatus();

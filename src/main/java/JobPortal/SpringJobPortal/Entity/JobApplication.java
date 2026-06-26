@@ -3,9 +3,7 @@ package JobPortal.SpringJobPortal.Entity;
 import JobPortal.SpringJobPortal.Entity.type.ApplicationStatus;
 import jakarta.persistence.*;
 import lombok.*;
-import org.hibernate.action.internal.OrphanRemovalAction;
 import org.hibernate.annotations.CreationTimestamp;
-import org.hibernate.annotations.Fetch;
 
 import java.time.LocalDateTime;
 
@@ -27,7 +25,7 @@ public class JobApplication {
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
-    private ApplicationStatus status;
+    private ApplicationStatus status = ApplicationStatus.APPLIED;
 
 
     @CreationTimestamp
@@ -45,5 +43,12 @@ public class JobApplication {
     private Double appliedSalary;
 
     private String appliedJobDescription;
+
+    @PrePersist
+    void setDefaultStatus() {
+        if (status == null) {
+            status = ApplicationStatus.APPLIED;
+        }
+    }
 
 }

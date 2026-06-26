@@ -40,6 +40,15 @@ public class CandidateProfileServiceImpl implements CandidateProfileService {
         candidateProfile.setExperience(candidateProfileReqDto.getExperience());
         candidateProfile.setEducation(candidateProfileReqDto.getEducation());
         candidateProfile.setResumeUrl(candidateProfileReqDto.getResumeUrl());
+        candidateProfile.setLinkedInUrl(candidateProfileReqDto.getLinkedInUrl());
+        candidateProfile.setTotalExperience(candidateProfileReqDto.getTotalExperience());
+        candidateProfile.setCurrentCompany(candidateProfileReqDto.getCurrentCompany());
+        candidateProfile.setCurrentDesignation(candidateProfileReqDto.getCurrentDesignation());
+        candidateProfile.setHighestQualification(candidateProfileReqDto.getHighestQualification());
+        candidateProfile.setGraduationYear(candidateProfileReqDto.getGraduationYear());
+        candidateProfile.setCurrentCtc(candidateProfileReqDto.getCurrentCtc());
+        candidateProfile.setExpectedCtc(candidateProfileReqDto.getExpectedCtc());
+        candidateProfile.setNoticePeriod(candidateProfileReqDto.getNoticePeriod());
 
         candidateProfileRepository.save(candidateProfile);
 
@@ -52,6 +61,15 @@ public class CandidateProfileServiceImpl implements CandidateProfileService {
                 .experience(candidateProfile.getExperience())
                 .skills(candidateProfile.getSkills())
                 .education(candidateProfile.getEducation())
+                .linkedInUrl(candidateProfile.getLinkedInUrl())
+                .totalExperience(candidateProfile.getTotalExperience())
+                .currentCompany(candidateProfile.getCurrentCompany())
+                .currentDesignation(candidateProfile.getCurrentDesignation())
+                .highestQualification(candidateProfile.getHighestQualification())
+                .graduationYear(candidateProfile.getGraduationYear())
+                .currentCtc(candidateProfile.getCurrentCtc())
+                .expectedCtc(candidateProfile.getExpectedCtc())
+                .noticePeriod(candidateProfile.getNoticePeriod())
                 .build();
     }
 
