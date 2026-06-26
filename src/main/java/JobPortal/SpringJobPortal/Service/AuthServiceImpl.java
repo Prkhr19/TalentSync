@@ -5,11 +5,9 @@ import JobPortal.SpringJobPortal.Dto.LoginRequestDto;
 import JobPortal.SpringJobPortal.Dto.SignUpRequestDto;
 import JobPortal.SpringJobPortal.Dto.SignupResponseDto;
 import JobPortal.SpringJobPortal.Entity.CandidateProfile;
-import JobPortal.SpringJobPortal.Entity.RecruiterProfile;
 import JobPortal.SpringJobPortal.Entity.User;
 import JobPortal.SpringJobPortal.Entity.type.RoleType;
 import JobPortal.SpringJobPortal.Repository.CandidateProfileRepository;
-import JobPortal.SpringJobPortal.Repository.RecruiterProfileRepository;
 import JobPortal.SpringJobPortal.Repository.UserRepository;
 import JobPortal.SpringJobPortal.Security.JwtService;
 import JobPortal.SpringJobPortal.Service.Impl.AuthServices;
@@ -30,7 +28,6 @@ public class AuthServiceImpl implements AuthServices {
     private final PasswordEncoder passwordEncoder;
     private final ModelMapper modelMapper;
     private final JwtService jwtService;
-    private final RecruiterProfileRepository recruiterProfileRepository;
     private final CandidateProfileRepository candidateProfileRepository;
 
 
@@ -45,31 +42,18 @@ public class AuthServiceImpl implements AuthServices {
                 .name(signUpRequestDto.getName())
                 .email(signUpRequestDto.getEmail())
                 .password(passwordEncoder.encode(signUpRequestDto.getPassword()))
-                .role(signUpRequestDto.getRole())
+                .role(RoleType.CANDIDATE)
                 .isActive(true)
                 .build();
 
         User savedUser = userRepository.save(user);
 
-        if (savedUser.getRole() == RoleType.ADMIN) {
-            RecruiterProfile recruiterProfile = new RecruiterProfile();
+        CandidateProfile candidateProfile = new CandidateProfile();
+        candidateProfile.setUser(savedUser);
+        savedUser.setCandidateProfile(candidateProfile);
+        candidateProfile.setName(savedUser.getName());
 
-            recruiterProfile.setFullName(savedUser.getName());
-            recruiterProfile.setDesignation("Admin");
-            recruiterProfile.setUser(savedUser);
-
-            recruiterProfileRepository.save(recruiterProfile);
-
-        }
-        if (savedUser.getRole() == RoleType.CANDIDATE) {
-            CandidateProfile candidateProfile = new CandidateProfile();
-            candidateProfile.setUser(savedUser);
-            savedUser.setCandidateProfile(candidateProfile);
-            candidateProfile.setName(savedUser.getName());
-
-            candidateProfileRepository.save(candidateProfile);
-
-        }
+        candidateProfileRepository.save(candidateProfile);
 
 
         return SignupResponseDto.builder()
