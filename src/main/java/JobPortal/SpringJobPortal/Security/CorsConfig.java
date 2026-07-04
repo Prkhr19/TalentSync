@@ -20,7 +20,8 @@ public class CorsConfig {
                 "http://localhost:5173",
                 "http://localhost:3000",
                 "https://talent-sync-ui.vercel.app",
-                "https://hire-hub-frontend-mu.vercel.app"
+                "https://hire-hub-frontend-mu.vercel.app",
+                "https://talent-sync-ui.vercel.app/"
         ));
 
         configuration.setAllowedMethods(List.of(
