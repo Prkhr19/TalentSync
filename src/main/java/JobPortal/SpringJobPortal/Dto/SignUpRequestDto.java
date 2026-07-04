@@ -1,6 +1,5 @@
 package JobPortal.SpringJobPortal.Dto;
 
-import JobPortal.SpringJobPortal.Entity.type.RoleType;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
@@ -20,7 +19,5 @@ public class SignUpRequestDto {
     @NotBlank
     @Size(min = 4)
     private String password;
-
-    private RoleType role;
 
 }
