@@ -28,8 +28,7 @@ public class Company {
 
     private String discription;
 
-    @OneToMany(mappedBy = "company")
-    private List<AdminProfile> admins;
+
 
     @OneToMany(mappedBy = "company")
     private List<Job> jobs;
