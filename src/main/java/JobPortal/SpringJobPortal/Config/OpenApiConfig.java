@@ -16,9 +16,10 @@ public class OpenApiConfig {
     @Bean
     public OpenAPI customOpenApi(){
         return new OpenAPI()
-                .info(new Info().title("Hire hub API")
+                .servers(List.of(new Server().url("https://talentsync-production-ac53.up.railway.app/api/v1")))
+                .info(new Info().title("TalentSync API")
                 .version("1.0")
-                .description("Backend APIs for HireHub"))
+                .description("Backend APIs for TalentSync"))
 
                 .addSecurityItem(new SecurityRequirement().addList("bearerAuth"))
                 .components(new Components()
