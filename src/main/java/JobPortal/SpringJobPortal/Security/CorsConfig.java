@@ -17,8 +17,8 @@ public class CorsConfig {
         CorsConfiguration configuration = new CorsConfiguration();
 
         configuration.setAllowedOrigins(List.of(
-                "http://localhost:5173",
-                "https://hire-hub-frontend-mu.vercel.app"
+                "http://localhost:8080",
+                "http://talent-sync-ui.vercel.app"
 
         ));
 
