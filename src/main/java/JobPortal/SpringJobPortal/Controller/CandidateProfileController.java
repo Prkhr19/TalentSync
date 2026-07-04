@@ -23,9 +23,18 @@ public class CandidateProfileController {
 
 
     @Operation(summary = "Candidate update Profile before applying")
-    @PutMapping(value = "/profile", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    @PutMapping(value = "/profile", consumes = {
+            MediaType.APPLICATION_JSON_VALUE,
+            MediaType.MULTIPART_FORM_DATA_VALUE,
+            MediaType.APPLICATION_FORM_URLENCODED_VALUE
+    })
     public ResponseEntity<CandidateProfileReqDto> updateProfile(
-            @Valid @ModelAttribute CandidateProfileReqDto candidateProfileReqDto) {
+            @Valid @RequestBody(required = false) CandidateProfileReqDto jsonProfile,
+            @Valid @ModelAttribute(required = false) CandidateProfileReqDto formProfile) {
+        CandidateProfileReqDto candidateProfileReqDto = jsonProfile != null ? jsonProfile : formProfile;
+        if (candidateProfileReqDto == null) {
+            throw new IllegalArgumentException("Profile data is required");
+        }
         CandidateProfileReqDto updateProfile = candidateProfileService.updateProfile(candidateProfileReqDto);
         return ResponseEntity.status(HttpStatus.CREATED).body(updateProfile);
     }
