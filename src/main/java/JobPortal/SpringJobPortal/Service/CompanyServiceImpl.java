@@ -2,18 +2,16 @@ package JobPortal.SpringJobPortal.Service;
 
 import JobPortal.SpringJobPortal.Dto.CompanyRequestDto;
 import JobPortal.SpringJobPortal.Dto.CompanyResponseDto;
+import JobPortal.SpringJobPortal.Entity.AdminProfile;
 import JobPortal.SpringJobPortal.Entity.Company;
-import JobPortal.SpringJobPortal.Entity.RecruiterProfile;
 import JobPortal.SpringJobPortal.Entity.User;
 import JobPortal.SpringJobPortal.Entity.type.RoleType;
+import JobPortal.SpringJobPortal.Repository.AdminProfileRepository;
 import JobPortal.SpringJobPortal.Repository.CompanyRepository;
-import JobPortal.SpringJobPortal.Repository.RecruiterProfileRepository;
 import JobPortal.SpringJobPortal.Security.CurrentUserAuth.CurrentUserService;
 import JobPortal.SpringJobPortal.Service.Impl.CompanyService;
-import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
-import org.apache.coyote.BadRequestException;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.stereotype.Service;
@@ -22,7 +20,7 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class CompanyServiceImpl implements CompanyService {
     private final CurrentUserService currentUserService;
-    private final RecruiterProfileRepository recruiterProfileRepository;
+    private final AdminProfileRepository adminProfileRepository;
     private final CompanyRepository companyRepository;
 
     @Transactional
@@ -32,27 +30,27 @@ public class CompanyServiceImpl implements CompanyService {
         User user = currentUserService.getCurrentUser();
         RoleType role = user.getRole();
 
-       if (role != RoleType.ADMIN){
-           throw new AccessDeniedException("Unauthorized access");
-       }
+        if (role != RoleType.ADMIN) {
+            throw new AccessDeniedException("Unauthorized access");
+        }
 
-       RecruiterProfile recruiterProfile = recruiterProfileRepository.findByUser(user).orElseThrow(()-> new BadCredentialsException("User not found"));
+        AdminProfile adminProfile = adminProfileRepository.findByUser(user)
+                .orElseThrow(() -> new BadCredentialsException("Admin profile not found"));
 
+        if (adminProfile.getCompany() != null) {
 
-       if (recruiterProfile.getCompany() != null){
+            Long existingCompanyId = adminProfile.getCompany().getId();
+            if (existingCompanyId != null && companyRepository.existsById(existingCompanyId)) {
+                throw new IllegalArgumentException("Company already present");
+            }
 
-           Long existingCompanyId = recruiterProfile.getCompany().getId();
-           if (existingCompanyId != null && companyRepository.existsById(existingCompanyId)){
-               throw new IllegalArgumentException("Company already present");
-           }
+            adminProfile.setCompany(null);
+            adminProfileRepository.save(adminProfile);
+        }
 
-           recruiterProfile.setCompany(null);
-           recruiterProfileRepository.save(recruiterProfile);
-       }
-
-       if (companyRepository.existsByCompanyNameIgnoreCase(companyRequestDto.getCompanyName())){
-           throw new IllegalArgumentException("company already exists with this name");
-       }
+        if (companyRepository.existsByCompanyNameIgnoreCase(companyRequestDto.getCompanyName())) {
+            throw new IllegalArgumentException("company already exists with this name");
+        }
 
         Company company = new Company();
         company.setCompanyName(companyRequestDto.getCompanyName());
@@ -60,12 +58,11 @@ public class CompanyServiceImpl implements CompanyService {
         company.setLocation(companyRequestDto.getLocation());
         company.setWebSite(companyRequestDto.getWebsite());
 
-       Company savedCompany = companyRepository.save(company);
+        Company savedCompany = companyRepository.save(company);
 
-        recruiterProfile.setCompany(savedCompany);
+        adminProfile.setCompany(savedCompany);
 
-        recruiterProfileRepository.save(recruiterProfile);
-
+        adminProfileRepository.save(adminProfile);
 
         return CompanyResponseDto.builder()
                 .message("Commpany created successfully")

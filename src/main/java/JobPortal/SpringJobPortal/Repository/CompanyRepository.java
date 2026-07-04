@@ -8,5 +8,5 @@ import java.util.Optional;
 public interface CompanyRepository extends JpaRepository<Company, Long> {
     boolean existsByCompanyNameIgnoreCase(String companyName);
 
-    Optional<Company> findFirstByRecruiters_User_UserId(Long userId);
+    Optional<Company> findFirstByAdmins_User_UserId(Long userId);
 }

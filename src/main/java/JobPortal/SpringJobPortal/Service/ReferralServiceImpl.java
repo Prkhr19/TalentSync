@@ -49,8 +49,8 @@ public class ReferralServiceImpl implements ReferralService {
         Referral referral = Referral.builder()
                 .jobApplication(jobApplication)
                 .companyName(referralRequestDto.getCompanyName())
-                .recruiterName(referralRequestDto.getRecruiterName())
-                .recruiterEmail(referralRequestDto.getRecruiterEmail())
+                .contactName(referralRequestDto.getContactName())
+                .contactEmail(referralRequestDto.getContactEmail())
                 .referredDate(referredDate)
                 .status(ReferralStatus.REFERRED)
                 .remarks(referralRequestDto.getRemarks())
@@ -114,8 +114,8 @@ public class ReferralServiceImpl implements ReferralService {
                 .orElseThrow(() -> new BadCredentialsException("Referral not found"));
 
         referral.setCompanyName(referralRequestDto.getCompanyName());
-        referral.setRecruiterName(referralRequestDto.getRecruiterName());
-        referral.setRecruiterEmail(referralRequestDto.getRecruiterEmail());
+        referral.setContactName(referralRequestDto.getContactName());
+        referral.setContactEmail(referralRequestDto.getContactEmail());
         referral.setRemarks(referralRequestDto.getRemarks());
         referral.setFollowUpDate(referralRequestDto.getFollowUpDate());
         referral.setInterviewDate(referralRequestDto.getInterviewDate());
@@ -186,8 +186,8 @@ public class ReferralServiceImpl implements ReferralService {
                 .id(referral.getId())
                 .jobApplicationId(referral.getJobApplication().getId())
                 .companyName(referral.getCompanyName())
-                .recruiterName(referral.getRecruiterName())
-                .recruiterEmail(referral.getRecruiterEmail())
+                .contactName(referral.getContactName())
+                .contactEmail(referral.getContactEmail())
                 .referredDate(referral.getReferredDate())
                 .status(referral.getStatus())
                 .remarks(referral.getRemarks())

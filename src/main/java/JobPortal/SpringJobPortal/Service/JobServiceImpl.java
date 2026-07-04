@@ -43,7 +43,7 @@ public class JobServiceImpl implements JobServices {
     public JobResponseDto createJob(@Valid JobRequestDto jobRequestDto) {
         User user = currentUserService.getCurrentUser();
 
-        Company company = companyRepository.findFirstByRecruiters_User_UserId(user.getUserId())
+        Company company = companyRepository.findFirstByAdmins_User_UserId(user.getUserId())
                 .orElseThrow(() -> new IllegalArgumentException("Company not found"));
 
         Job job = Job.builder()

@@ -2,7 +2,7 @@ package JobPortal.SpringJobPortal.Entity.type;
 
 public enum ReferralStatus {
     REFERRED,
-    RECRUITER_ACKNOWLEDGED,
+    CONTACT_ACKNOWLEDGED,
     INTERVIEW_SCHEDULED,
     INTERVIEW_COMPLETED,
     OFFER_RECEIVED,

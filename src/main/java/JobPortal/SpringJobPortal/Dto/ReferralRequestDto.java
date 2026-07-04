@@ -19,11 +19,11 @@ public class ReferralRequestDto {
     private String companyName;
 
     @NotBlank
-    private String recruiterName;
+    private String contactName;
 
     @Email
     @NotBlank
-    private String recruiterEmail;
+    private String contactEmail;
 
     private LocalDate referredDate;
 

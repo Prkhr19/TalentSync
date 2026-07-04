@@ -48,7 +48,7 @@ public class User implements UserDetails {
     private CandidateProfile candidateProfile;
 
     @OneToOne(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    private RecruiterProfile recruiterProfile;
+    private AdminProfile adminProfile;
 
 
     @Override

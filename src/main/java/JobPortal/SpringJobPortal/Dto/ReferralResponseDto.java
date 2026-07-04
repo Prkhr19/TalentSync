@@ -18,8 +18,8 @@ public class ReferralResponseDto {
     private Long id;
     private Long jobApplicationId;
     private String companyName;
-    private String recruiterName;
-    private String recruiterEmail;
+    private String contactName;
+    private String contactEmail;
     private LocalDate referredDate;
     private ReferralStatus status;
     private String remarks;

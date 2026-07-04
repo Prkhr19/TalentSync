@@ -28,11 +28,11 @@ public class Referral {
     @Column(nullable = false)
     private String companyName;
 
-    @Column(nullable = false)
-    private String recruiterName;
+    @Column(name = "contact_name", nullable = false)
+    private String contactName;
 
-    @Column(nullable = false)
-    private String recruiterEmail;
+    @Column(name = "contact_email", nullable = false)
+    private String contactEmail;
 
     private LocalDate referredDate;
 
