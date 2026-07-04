@@ -134,6 +134,7 @@ class AdminCandidateServiceImplTest {
         candidate.setTotalExperience("5 years");
         candidate.setNoticePeriod("30 days");
         candidate.setExpectedCtc(1200000.0);
+        candidate.setResumeUrl("https://res.cloudinary.com/example/raw/upload/resume.pdf");
         candidate.setResumeFileName("5_resume.pdf");
         candidate.setUser(User.builder().role(RoleType.CANDIDATE).email(name.toLowerCase() + "@example.com").build());
         return candidate;

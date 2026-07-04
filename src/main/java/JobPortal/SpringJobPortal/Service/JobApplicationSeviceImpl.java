@@ -81,7 +81,7 @@ public class JobApplicationSeviceImpl implements JobApplicationSevice {
     }
 
     private void validateCandidateProfile(CandidateProfile profile) {
-        if (profile.getPhoneNo() == null || profile.getResumeFileName() == null || profile.getSkills() == null
+        if (profile.getPhoneNo() == null || profile.getResumeUrl() == null || profile.getSkills() == null
                 || profile.getEducation() == null || profile.getLinkedInUrl() == null
                 || profile.getTotalExperience() == null || profile.getCurrentCompany() == null
                 || profile.getCurrentDesignation() == null || profile.getHighestQualification() == null

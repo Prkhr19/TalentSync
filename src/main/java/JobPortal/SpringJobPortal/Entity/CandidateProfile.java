@@ -6,6 +6,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.time.LocalDateTime;
+
 @Entity
 @AllArgsConstructor
 @NoArgsConstructor
@@ -26,7 +28,19 @@ public class CandidateProfile {
     private String skills;
 
     @Column(name = "resume_url")
+    private String resumeUrl;
+
+    @Column(name = "resume_public_id")
+    private String resumePublicId;
+
+    @Column(name = "resume_file_name")
     private String resumeFileName;
+
+    @Column(name = "resume_file_size")
+    private Long resumeFileSize;
+
+    @Column(name = "resume_uploaded_at")
+    private LocalDateTime resumeUploadedAt;
 
     @Column
     private String experience;

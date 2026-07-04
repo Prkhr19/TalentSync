@@ -7,13 +7,10 @@ import JobPortal.SpringJobPortal.Service.Impl.JobServices;
 import io.swagger.v3.oas.annotations.Operation;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.springframework.core.io.Resource;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
@@ -28,20 +25,9 @@ public class CandidateProfileController {
     @Operation(summary = "Candidate update Profile before applying")
     @PutMapping(value = "/profile", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<CandidateProfileReqDto> updateProfile(
-            @Valid @ModelAttribute CandidateProfileReqDto candidateProfileReqDto,
-            @RequestPart(value = "resume", required = false) MultipartFile resume) {
-        CandidateProfileReqDto updateProfile = candidateProfileService.updateProfile(candidateProfileReqDto, resume);
+            @Valid @ModelAttribute CandidateProfileReqDto candidateProfileReqDto) {
+        CandidateProfileReqDto updateProfile = candidateProfileService.updateProfile(candidateProfileReqDto);
         return ResponseEntity.status(HttpStatus.CREATED).body(updateProfile);
-    }
-
-    @Operation(summary = "Download candidate resume PDF")
-    @GetMapping("/profile/resume")
-    public ResponseEntity<Resource> downloadResume() {
-        Resource resume = candidateProfileService.getResume();
-        return ResponseEntity.ok()
-                .contentType(MediaType.APPLICATION_PDF)
-                .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + resume.getFilename() + "\"")
-                .body(resume);
     }
 
     @Operation(summary = "Applied Application")

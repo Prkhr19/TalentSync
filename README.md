@@ -3,7 +3,7 @@ HireHub is a backend job portal application built using Spring Boot. It supports
 
 ## API Documentation
 
-https://hirehub-stsb.onrender.com/api/v1/swagger-ui/index.html#
+
 ## Tech Stack
 
 - Java 17

@@ -107,7 +107,7 @@ public class AdminCandidateServiceImpl implements AdminCandidateService {
                 .email(candidateProfile.getUser() != null ? candidateProfile.getUser().getEmail() : null)
                 .phoneNo(candidateProfile.getPhoneNo())
                 .professionalInformation(mapToProfessionalInfo(candidateProfile))
-                .resumeUrl(candidateProfile.getResumeFileName())
+                .resumeUrl(candidateProfile.getResumeUrl())
                 .linkedInUrl(candidateProfile.getLinkedInUrl())
                 .githubUrl(candidateProfile.getGithubUrl())
                 .portfolioUrl(candidateProfile.getPortfolioUrl())
@@ -142,7 +142,7 @@ public class AdminCandidateServiceImpl implements AdminCandidateService {
                 .preferredLocation(candidateProfile.getPreferredLocation())
                 .noticePeriod(candidateProfile.getNoticePeriod())
                 .expectedCTC(candidateProfile.getExpectedCtc())
-                .resumeUrl(candidateProfile.getResumeFileName())
+                .resumeUrl(candidateProfile.getResumeUrl())
                 .build();
     }
 
