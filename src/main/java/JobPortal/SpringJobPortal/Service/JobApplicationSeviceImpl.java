@@ -89,7 +89,7 @@ public class JobApplicationSeviceImpl implements JobApplicationSevice {
             throw new EntityNotFoundException("Job not found with id: " + jobId);
         }
 
-        List<JobApplication> applications = jobApplicationRepository.findByJobId(jobId);
+        List<JobApplication> applications = jobApplicationRepository.findByJob_Id(jobId);
 
         return applications.stream()
                 .map(application -> JobApplicationResponseDto.builder()
