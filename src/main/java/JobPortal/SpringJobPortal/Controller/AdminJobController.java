@@ -64,9 +64,14 @@ public class AdminJobController {
     }
 
     @Operation(summary = "Get all applications for a job")
-    @GetMapping("/{jobId}/applications")
-    public ResponseEntity<List<JobApplicationResponseDto>> getApplicationsByJobId(@PathVariable Long jobId) {
-        List<JobApplicationResponseDto> response = jobApplicationService.getApplicationsByJobId(jobId);
-        return ResponseEntity.ok(response);
+
+//    @GetMapping("/{jobId}/applications")
+//    public ResponseEntity<List<JobApplicationResponseDto>> getApplicationsByJobId(@PathVariable Long jobId) {
+//        List<JobApplicationResponseDto> response = jobApplicationService.getApplicationsByJobId(jobId);
+//        return ResponseEntity.ok(response);
+
+    @GetMapping("/{id}/applications")
+    public ResponseEntity<List<AdminJobApplicationResponseDto>> getJobApplications(@PathVariable Long id) {
+        return ResponseEntity.ok(jobService.getJobApplications(id));
     }
 }

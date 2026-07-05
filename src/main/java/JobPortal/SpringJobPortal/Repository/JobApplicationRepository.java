@@ -11,7 +11,7 @@ import java.util.Optional;
 public interface JobApplicationRepository extends JpaRepository<JobApplication, Long> {
     boolean existsByCandidateAndJob(CandidateProfile candidateProfile, Job job);
 
-    List<JobApplication> findByJobId(Long jobId);
+    List<JobApplication> findByJob_Id(Long jobId);
 
     List<JobApplication> findByCandidate_Id(Long candidateId);
 

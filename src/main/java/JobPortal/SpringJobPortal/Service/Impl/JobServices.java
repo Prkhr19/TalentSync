@@ -22,6 +22,7 @@ public interface JobServices {
 
     Page<JobSearchResponseDto> searchJobs(JobSearchRequestDto jobSearchRequestDto);
 
+    List<AdminJobApplicationResponseDto> getJobApplications(Long jobId);
 
     public String saveJob(Long jobId);
 }

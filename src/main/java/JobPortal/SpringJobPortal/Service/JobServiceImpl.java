@@ -37,6 +37,7 @@ public class JobServiceImpl implements JobServices {
     private final CompanyRepository companyRepository;
     private final SavedJobRepository savedJobRepository;
     private final CandidateProfileRepository candidateProfileRepository;
+    private final JobApplicationRepository jobApplicationRepository;
 
     @Transactional
     @Override
@@ -239,6 +240,36 @@ public class JobServiceImpl implements JobServices {
                 .location(job.getLocation())
                 .build());
 
+    }
+
+    @Override
+    public List<AdminJobApplicationResponseDto> getJobApplications(Long jobId) {
+        User user = currentUserService.getCurrentUser();
+
+        if (user.getRole() != RoleType.ADMIN) {
+            throw new AccessDeniedException("Unauthorized access");
+        }
+
+        Job job = jobRepository.findById(jobId)
+                .orElseThrow(() -> new BadCredentialsException("Job not found"));
+
+        return jobApplicationRepository.findByJob_Id(jobId)
+                .stream()
+                .map(application -> AdminJobApplicationResponseDto.builder()
+                        .applicationId(application.getId())
+                        .jobId(job.getId())
+                        .jobTitle(job.getTitle())
+                        .candidateId(application.getCandidate().getId())
+                        .candidateName(application.getCandidate().getName())
+                        .candidateEmail(application.getCandidate().getUser() != null
+                                ? application.getCandidate().getUser().getEmail()
+                                : null)
+                        .status(application.getStatus())
+                        .appliedAt(application.getAppliedAt())
+                        .appliedSalary(application.getAppliedSalary())
+                        .appliedJobDescription(application.getAppliedJobDescription())
+                        .build())
+                .toList();
     }
 
     @Transactional
