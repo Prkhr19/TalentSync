@@ -9,12 +9,26 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/admin/jobs")
 public class AdminJobController {
 
     private final JobServices jobService;
+
+    @Operation(summary = "Get all jobs")
+    @GetMapping
+    public ResponseEntity<List<JobSearchResponseDto>> getAllJobs() {
+        return ResponseEntity.ok(jobService.getAllJobs());
+    }
+
+    @Operation(summary = "Get a job by ID")
+    @GetMapping("/{id}")
+    public ResponseEntity<JobSearchResponseDto> getJobById(@PathVariable Long id) {
+        return ResponseEntity.ok(jobService.getJobById(id));
+    }
 
     @Operation(summary = "Create a job for a company")
     @PostMapping
