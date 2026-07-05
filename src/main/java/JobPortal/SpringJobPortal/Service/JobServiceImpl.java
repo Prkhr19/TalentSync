@@ -253,8 +253,9 @@ public class JobServiceImpl implements JobServices {
         Job job = jobRepository.findById(jobId)
                 .orElseThrow(() -> new BadCredentialsException("Job not found"));
 
-        return jobApplicationRepository.findByJob_Id(jobId)
+        return jobApplicationRepository.findAllByJobId(jobId)
                 .stream()
+                .filter(application -> application.getJob() != null && jobId.equals(application.getJob().getId()))
                 .map(application -> AdminJobApplicationResponseDto.builder()
                         .applicationId(application.getId())
                         .jobId(job.getId())

@@ -4,18 +4,22 @@ import JobPortal.SpringJobPortal.Entity.CandidateProfile;
 import JobPortal.SpringJobPortal.Entity.Job;
 import JobPortal.SpringJobPortal.Entity.JobApplication;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 
 import java.util.List;
-import java.util.Optional;
 
 public interface JobApplicationRepository extends JpaRepository<JobApplication, Long> {
     boolean existsByCandidateAndJob(CandidateProfile candidateProfile, Job job);
 
-    List<JobApplication> findByJob_Id(Long jobId);
+    @Query("""
+            SELECT ja FROM JobApplication ja
+            JOIN FETCH ja.candidate c
+            LEFT JOIN FETCH c.user
+            WHERE ja.job.id = :jobId
+            ORDER BY ja.appliedAt DESC
+            """)
+    List<JobApplication> findAllByJobId(@Param("jobId") Long jobId);
 
     List<JobApplication> findByCandidate_Id(Long candidateId);
-
-
-
-
 }

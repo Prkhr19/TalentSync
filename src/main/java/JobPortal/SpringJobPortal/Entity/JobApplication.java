@@ -37,7 +37,7 @@ public class JobApplication {
     private CandidateProfile candidate;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "job_Id", nullable = false)
+    @JoinColumn(name = "job_id", nullable = false)
     private Job job;
 
     private Double appliedSalary;
