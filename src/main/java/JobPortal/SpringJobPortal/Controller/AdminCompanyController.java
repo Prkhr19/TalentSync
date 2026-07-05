@@ -15,7 +15,7 @@ import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/admin/companies")
+@RequestMapping("/admin/company")
 public class AdminCompanyController {
 
     private final CompanyService companyService;
