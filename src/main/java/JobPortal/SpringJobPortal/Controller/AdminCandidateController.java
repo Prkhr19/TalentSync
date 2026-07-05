@@ -53,5 +53,10 @@ public class AdminCandidateController {
     public ResponseEntity<AdminCandidateDetailResponseDto> getCandidateById(@PathVariable Long candidateId) {
         AdminCandidateDetailResponseDto response = adminCandidateService.getCandidateById(candidateId);
         return ResponseEntity.ok(response);
+
     }
+
+
+
+
 }
