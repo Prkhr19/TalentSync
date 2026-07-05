@@ -23,6 +23,9 @@ import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 @Service
 @RequiredArgsConstructor
 public class JobApplicationSeviceImpl implements JobApplicationSevice {
@@ -78,6 +81,24 @@ public class JobApplicationSeviceImpl implements JobApplicationSevice {
                 .build();
 
 
+    }
+
+    @Override
+    public List<JobApplicationResponseDto> getApplicationsByJobId(Long jobId) {
+        if (!jobRepository.existsById(jobId)) {
+            throw new EntityNotFoundException("Job not found with id: " + jobId);
+        }
+
+        List<JobApplication> applications = jobApplicationRepository.findByJobId(jobId);
+
+        return applications.stream()
+                .map(application -> JobApplicationResponseDto.builder()
+                        .name(application.getCandidate().getName())
+                        .status(application.getStatus())
+                        .appliedSalary(application.getAppliedSalary())
+                        .appliedJobDescription(application.getAppliedJobDescription())
+                        .build())
+                .collect(Collectors.toList());
     }
 
     private void validateCandidateProfile(CandidateProfile profile) {

@@ -1,6 +1,7 @@
 package JobPortal.SpringJobPortal.Controller;
 
 import JobPortal.SpringJobPortal.Dto.*;
+import JobPortal.SpringJobPortal.Service.Impl.JobApplicationSevice;
 import JobPortal.SpringJobPortal.Service.Impl.JobServices;
 import io.swagger.v3.oas.annotations.Operation;
 import jakarta.validation.Valid;
@@ -17,6 +18,7 @@ import java.util.List;
 public class AdminJobController {
 
     private final JobServices jobService;
+    private final JobApplicationSevice jobApplicationService;
 
     @Operation(summary = "Get all jobs")
     @GetMapping
@@ -59,5 +61,12 @@ public class AdminJobController {
             @PathVariable Long id,
             @Valid @RequestBody JobPatchRequestDto jobPatchRequestDto) {
         return ResponseEntity.ok(jobService.patchJob(id, jobPatchRequestDto));
+    }
+
+    @Operation(summary = "Get all applications for a job")
+    @GetMapping("/{jobId}/applications")
+    public ResponseEntity<List<JobApplicationResponseDto>> getApplicationsByJobId(@PathVariable Long jobId) {
+        List<JobApplicationResponseDto> response = jobApplicationService.getApplicationsByJobId(jobId);
+        return ResponseEntity.ok(response);
     }
 }
