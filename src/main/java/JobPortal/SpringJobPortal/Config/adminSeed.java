@@ -46,6 +46,8 @@ public class adminSeed implements CommandLineRunner {
 
         AdminProfile profile = new AdminProfile();
         profile.setUser(admin);
+        profile.setFullName(adminName);
+        profile.setDesignation("Admin");
         adminProfileRepository.save(profile);
     }
 }

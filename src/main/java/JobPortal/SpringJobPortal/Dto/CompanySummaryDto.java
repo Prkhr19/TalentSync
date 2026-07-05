@@ -9,11 +9,10 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class CompanyResponseDto {
-    private String message;
+public class CompanySummaryDto {
+
     private Long id;
     private String companyName;
-    private String description;
     private String location;
     private String website;
 }

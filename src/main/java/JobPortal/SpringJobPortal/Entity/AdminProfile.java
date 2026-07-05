@@ -28,8 +28,4 @@ public class AdminProfile {
     @OneToOne
     @JoinColumn(name = "user_id")
     private User user;
-
-    @ManyToOne
-    @JoinColumn(name = "company_id")
-    private Company company;
 }

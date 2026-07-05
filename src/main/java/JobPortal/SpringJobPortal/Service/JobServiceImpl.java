@@ -43,7 +43,11 @@ public class JobServiceImpl implements JobServices {
     public JobResponseDto createJob(@Valid JobRequestDto jobRequestDto) {
         User user = currentUserService.getCurrentUser();
 
-        Company company = companyRepository.findFirstByAdmins_User_UserId(user.getUserId())
+        if (user.getRole() != RoleType.ADMIN) {
+            throw new AccessDeniedException("Unauthorized access");
+        }
+
+        Company company = companyRepository.findById(jobRequestDto.getCompanyId())
                 .orElseThrow(() -> new IllegalArgumentException("Company not found"));
 
         Job job = Job.builder()
@@ -116,6 +120,10 @@ public class JobServiceImpl implements JobServices {
         job.setDescription((jobRequestDto.getDescription()));
         job.setLocation(jobRequestDto.getLocation());
         job.setExperienceRequired(jobRequestDto.getExperienceRequired());
+
+        Company company = companyRepository.findById(jobRequestDto.getCompanyId())
+                .orElseThrow(() -> new IllegalArgumentException("Company not found"));
+        job.setCompany(company);
 
         Job updated = jobRepository.save(job);
 

@@ -32,5 +32,6 @@ public class JobRequestDto {
     @NotNull
     private Jobtype jobType;
 
-
+    @NotNull
+    private Long companyId;
 }
