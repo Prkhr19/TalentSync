@@ -31,9 +31,6 @@ public class CandidateProfileReqDto {
     private String experience;
 
     @NotBlank
-    private String education;
-
-    @NotBlank
     private String location;
 
     @NotBlank
@@ -42,7 +39,7 @@ public class CandidateProfileReqDto {
     @NotBlank
     private String totalExperience;
 
-    @NotBlank
+
     private String currentCompany;
 
     @NotBlank
@@ -55,7 +52,7 @@ public class CandidateProfileReqDto {
     @Positive
     private Integer graduationYear;
 
-    @NotNull
+
     @Positive
     private Double currentCtc;
 
