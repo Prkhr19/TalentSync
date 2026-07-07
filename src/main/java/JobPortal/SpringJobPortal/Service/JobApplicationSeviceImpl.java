@@ -12,11 +12,15 @@ import JobPortal.SpringJobPortal.Repository.UserRepository;
 import JobPortal.SpringJobPortal.Security.CurrentUserAuth.CurrentUserService;
 import JobPortal.SpringJobPortal.Dto.JobApplicationRequestDto;
 import JobPortal.SpringJobPortal.Dto.JobApplicationResponseDto;
+import JobPortal.SpringJobPortal.Dto.JobApplicationStatusRequestDto;
+import JobPortal.SpringJobPortal.Dto.JobApplicationStatusResponseDto;
 import JobPortal.SpringJobPortal.Entity.User;
 import JobPortal.SpringJobPortal.Repository.CandidateProfileRepository;
 import JobPortal.SpringJobPortal.Repository.JobApplicationRepository;
 import JobPortal.SpringJobPortal.Service.Impl.JobApplicationSevice;
 import jakarta.persistence.EntityNotFoundException;
+import jakarta.transaction.Transactional;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.authentication.BadCredentialsException;
@@ -99,6 +103,34 @@ public class JobApplicationSeviceImpl implements JobApplicationSevice {
                         .appliedJobDescription(application.getAppliedJobDescription())
                         .build())
                 .collect(Collectors.toList());
+    }
+
+    @Transactional
+    @Override
+    public JobApplicationStatusResponseDto updateApplicationStatus(
+            Long applicationId,
+            @Valid JobApplicationStatusRequestDto requestDto) {
+        validateAdminAccess();
+
+        JobApplication application = jobApplicationRepository.findById(applicationId)
+                .orElseThrow(() -> new BadCredentialsException("Job application not found"));
+
+        application.setStatus(requestDto.getStatus());
+        JobApplication updatedApplication = jobApplicationRepository.save(application);
+
+        return JobApplicationStatusResponseDto.builder()
+                .applicationId(updatedApplication.getId())
+                .status(updatedApplication.getStatus())
+                .message("Application status updated successfully")
+                .build();
+    }
+
+    private void validateAdminAccess() {
+        User user = currentUserService.getCurrentUser();
+
+        if (user.getRole() != RoleType.ADMIN) {
+            throw new AccessDeniedException("Unauthorized access");
+        }
     }
 
     private void validateCandidateProfile(CandidateProfile profile) {

@@ -1,7 +1,7 @@
 package JobPortal.SpringJobPortal.Dto;
 
 import JobPortal.SpringJobPortal.Entity.type.ApplicationStatus;
-import JobPortal.SpringJobPortal.Entity.type.JobStatus;
+import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -11,5 +11,6 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class JobApplicationStatusRequestDto {
 
+    @NotNull
     private ApplicationStatus status;
 }
