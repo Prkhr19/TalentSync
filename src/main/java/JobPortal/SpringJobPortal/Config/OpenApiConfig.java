@@ -17,7 +17,7 @@ public class OpenApiConfig {
     public OpenAPI customOpenApi(){
         return new OpenAPI()
                 .servers(List.of(new Server().url("https://talentsync-production-ac53.up.railway.app/api/v1")))
-                .info(new Info().title("TalentSync API")
+                .info(new Info().title("Hire nex API")
                 .version("1.0")
                 .description("Backend APIs for TalentSync recruitment consultancy platform. Admin users manage jobs, candidates, and referrals. Candidates can sign up and apply for jobs."))
 
