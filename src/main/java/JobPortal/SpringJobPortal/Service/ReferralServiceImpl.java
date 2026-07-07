@@ -59,8 +59,6 @@ public class ReferralServiceImpl implements ReferralService {
                 .status(ReferralStatus.REFERRED)
                 .remarks(referralRequestDto.getRemarks())
                 .followUpDate(referralRequestDto.getFollowUpDate())
-                .interviewDate(referralRequestDto.getInterviewDate())
-                .joiningDate(referralRequestDto.getJoiningDate())
                 .build();
 
         jobApplication.setStatus(ApplicationStatus.REFERRED);
@@ -118,9 +116,6 @@ public class ReferralServiceImpl implements ReferralService {
         referral.setContactEmail(referralRequestDto.getContactEmail());
         referral.setRemarks(referralRequestDto.getRemarks());
         referral.setFollowUpDate(referralRequestDto.getFollowUpDate());
-        referral.setInterviewDate(referralRequestDto.getInterviewDate());
-        referral.setJoiningDate(referralRequestDto.getJoiningDate());
-
         if (referralRequestDto.getReferredDate() != null) {
             referral.setReferredDate(referralRequestDto.getReferredDate());
         }

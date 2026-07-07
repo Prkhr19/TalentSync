@@ -32,7 +32,5 @@ public class ReferralRequestDto {
 
     private LocalDate followUpDate;
 
-    private LocalDate interviewDate;
 
-    private LocalDate joiningDate;
 }
