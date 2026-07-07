@@ -1,8 +1,10 @@
 package JobPortal.SpringJobPortal.Service;
 
+import JobPortal.SpringJobPortal.Dto.ReferralDetailResponseDto;
 import JobPortal.SpringJobPortal.Dto.ReferralRequestDto;
 import JobPortal.SpringJobPortal.Dto.ReferralResponseDto;
 import JobPortal.SpringJobPortal.Dto.ReferralStatusRequestDto;
+import JobPortal.SpringJobPortal.Dto.ReferralSummaryResponseDto;
 import JobPortal.SpringJobPortal.Entity.CandidateProfile;
 import JobPortal.SpringJobPortal.Entity.JobApplication;
 import JobPortal.SpringJobPortal.Entity.Referral;
@@ -10,6 +12,8 @@ import JobPortal.SpringJobPortal.Entity.User;
 import JobPortal.SpringJobPortal.Entity.type.ApplicationStatus;
 import JobPortal.SpringJobPortal.Entity.type.ReferralStatus;
 import JobPortal.SpringJobPortal.Entity.type.RoleType;
+import JobPortal.SpringJobPortal.Exception.ResourceNotFoundException;
+import JobPortal.SpringJobPortal.Mapper.ReferralMapper;
 import JobPortal.SpringJobPortal.Repository.JobApplicationRepository;
 import JobPortal.SpringJobPortal.Repository.ReferralRepository;
 import JobPortal.SpringJobPortal.Security.CurrentUserAuth.CurrentUserService;
@@ -18,7 +22,6 @@ import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.AccessDeniedException;
-import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -31,6 +34,7 @@ public class ReferralServiceImpl implements ReferralService {
     private final ReferralRepository referralRepository;
     private final JobApplicationRepository jobApplicationRepository;
     private final CurrentUserService currentUserService;
+    private final ReferralMapper referralMapper;
 
     @Transactional
     @Override
@@ -38,7 +42,7 @@ public class ReferralServiceImpl implements ReferralService {
         validateAdminAccess();
 
         JobApplication jobApplication = jobApplicationRepository.findById(applicationId)
-                .orElseThrow(() -> new BadCredentialsException("Job application not found"));
+                .orElseThrow(() -> new ResourceNotFoundException("Job application not found"));
 
         validateJobApplicationCandidate(jobApplication);
 
@@ -59,35 +63,31 @@ public class ReferralServiceImpl implements ReferralService {
                 .joiningDate(referralRequestDto.getJoiningDate())
                 .build();
 
+        jobApplication.setStatus(ApplicationStatus.REFERRED);
+
         Referral savedReferral = referralRepository.save(referral);
+        jobApplicationRepository.save(jobApplication);
 
-        if (jobApplication.getStatus() != ApplicationStatus.REFERRED) {
-            jobApplication.setStatus(ApplicationStatus.REFERRED);
-            jobApplicationRepository.save(jobApplication);
-        }
-
-        ReferralResponseDto response = mapToResponseDto(savedReferral);
-        response.setMessage("Referral created successfully");
-        return response;
+        return referralMapper.toResponseDto(savedReferral, "Referral created successfully");
     }
 
     @Override
-    public ReferralResponseDto getReferralById(Long id) {
+    public ReferralDetailResponseDto getReferralById(Long id) {
         validateAdminAccess();
 
-        Referral referral = referralRepository.findById(id)
-                .orElseThrow(() -> new BadCredentialsException("Referral not found"));
+        Referral referral = referralRepository.findByIdWithDetails(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Referral not found"));
 
-        return mapToResponseDto(referral);
+        return referralMapper.toDetailDto(referral);
     }
 
     @Override
-    public List<ReferralResponseDto> getAllReferrals() {
+    public List<ReferralSummaryResponseDto> getAllReferrals() {
         validateAdminAccess();
 
-        return referralRepository.findAll()
+        return referralRepository.findAllWithDetails()
                 .stream()
-                .map(this::mapToResponseDto)
+                .map(referralMapper::toSummaryDto)
                 .toList();
     }
 
@@ -96,12 +96,12 @@ public class ReferralServiceImpl implements ReferralService {
         validateAdminAccess();
 
         if (!jobApplicationRepository.existsById(applicationId)) {
-            throw new BadCredentialsException("Job application not found");
+            throw new ResourceNotFoundException("Job application not found");
         }
 
         return referralRepository.findByJobApplicationId(applicationId)
                 .stream()
-                .map(this::mapToResponseDto)
+                .map(referralMapper::toResponseDto)
                 .toList();
     }
 
@@ -111,7 +111,7 @@ public class ReferralServiceImpl implements ReferralService {
         validateAdminAccess();
 
         Referral referral = referralRepository.findById(id)
-                .orElseThrow(() -> new BadCredentialsException("Referral not found"));
+                .orElseThrow(() -> new ResourceNotFoundException("Referral not found"));
 
         referral.setCompanyName(referralRequestDto.getCompanyName());
         referral.setContactName(referralRequestDto.getContactName());
@@ -127,9 +127,7 @@ public class ReferralServiceImpl implements ReferralService {
 
         Referral updatedReferral = referralRepository.save(referral);
 
-        ReferralResponseDto response = mapToResponseDto(updatedReferral);
-        response.setMessage("Referral updated successfully");
-        return response;
+        return referralMapper.toResponseDto(updatedReferral, "Referral updated successfully");
     }
 
     @Transactional
@@ -138,15 +136,13 @@ public class ReferralServiceImpl implements ReferralService {
         validateAdminAccess();
 
         Referral referral = referralRepository.findById(id)
-                .orElseThrow(() -> new BadCredentialsException("Referral not found"));
+                .orElseThrow(() -> new ResourceNotFoundException("Referral not found"));
 
         referral.setStatus(referralStatusRequestDto.getStatus());
 
         Referral updatedReferral = referralRepository.save(referral);
 
-        ReferralResponseDto response = mapToResponseDto(updatedReferral);
-        response.setMessage("Referral status updated successfully");
-        return response;
+        return referralMapper.toResponseDto(updatedReferral, "Referral status updated successfully");
     }
 
     @Transactional
@@ -155,7 +151,7 @@ public class ReferralServiceImpl implements ReferralService {
         validateAdminAccess();
 
         Referral referral = referralRepository.findById(id)
-                .orElseThrow(() -> new BadCredentialsException("Referral not found"));
+                .orElseThrow(() -> new ResourceNotFoundException("Referral not found"));
 
         referralRepository.delete(referral);
 
@@ -179,23 +175,5 @@ public class ReferralServiceImpl implements ReferralService {
         if (candidate == null || candidate.getUser() == null) {
             throw new IllegalArgumentException("Job application does not belong to a valid candidate");
         }
-    }
-
-    private ReferralResponseDto mapToResponseDto(Referral referral) {
-        return ReferralResponseDto.builder()
-                .id(referral.getId())
-                .jobApplicationId(referral.getJobApplication().getId())
-                .companyName(referral.getCompanyName())
-                .contactName(referral.getContactName())
-                .contactEmail(referral.getContactEmail())
-                .referredDate(referral.getReferredDate())
-                .status(referral.getStatus())
-                .remarks(referral.getRemarks())
-                .followUpDate(referral.getFollowUpDate())
-                .interviewDate(referral.getInterviewDate())
-                .joiningDate(referral.getJoiningDate())
-                .createdAt(referral.getCreatedAt())
-                .updatedAt(referral.getUpdatedAt())
-                .build();
     }
 }

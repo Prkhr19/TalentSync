@@ -1,0 +1,8 @@
+package JobPortal.SpringJobPortal.Exception;
+
+public class InvalidApplicationStatusException extends RuntimeException {
+
+    public InvalidApplicationStatusException(String message) {
+        super(message);
+    }
+}

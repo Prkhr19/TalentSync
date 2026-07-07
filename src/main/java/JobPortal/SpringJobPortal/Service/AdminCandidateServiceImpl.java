@@ -6,6 +6,7 @@ import JobPortal.SpringJobPortal.Entity.JobApplication;
 import JobPortal.SpringJobPortal.Entity.Referral;
 import JobPortal.SpringJobPortal.Entity.User;
 import JobPortal.SpringJobPortal.Entity.type.RoleType;
+import JobPortal.SpringJobPortal.Mapper.ReferralMapper;
 import JobPortal.SpringJobPortal.Repository.CandidateProfileRepository;
 import JobPortal.SpringJobPortal.Repository.JobApplicationRepository;
 import JobPortal.SpringJobPortal.Repository.ReferralRepository;
@@ -38,6 +39,7 @@ public class AdminCandidateServiceImpl implements AdminCandidateService {
     private final JobApplicationRepository jobApplicationRepository;
     private final ReferralRepository referralRepository;
     private final CurrentUserService currentUserService;
+    private final ReferralMapper referralMapper;
 
     @Override
     public Page<AdminCandidateSummaryResponseDto> getCandidates(
@@ -111,7 +113,7 @@ public class AdminCandidateServiceImpl implements AdminCandidateService {
                 .linkedInUrl(candidateProfile.getLinkedInUrl())
                 .githubUrl(candidateProfile.getGithubUrl())
                 .portfolioUrl(candidateProfile.getPortfolioUrl())
-                .referralHistory(referrals.stream().map(this::mapToReferralDto).toList())
+                .referralHistory(referrals.stream().map(referralMapper::toResponseDto).toList())
                 .applicationHistory(applications.stream().map(this::mapToApplicationHistoryDto).toList())
                 .build();
     }
@@ -161,24 +163,6 @@ public class AdminCandidateServiceImpl implements AdminCandidateService {
                 .preferredLocation(candidateProfile.getPreferredLocation())
                 .experience(candidateProfile.getExperience())
                 .education(candidateProfile.getEducation())
-                .build();
-    }
-
-    private ReferralResponseDto mapToReferralDto(Referral referral) {
-        return ReferralResponseDto.builder()
-                .id(referral.getId())
-                .jobApplicationId(referral.getJobApplication().getId())
-                .companyName(referral.getCompanyName())
-                .contactName(referral.getContactName())
-                .contactEmail(referral.getContactEmail())
-                .referredDate(referral.getReferredDate())
-                .status(referral.getStatus())
-                .remarks(referral.getRemarks())
-                .followUpDate(referral.getFollowUpDate())
-                .interviewDate(referral.getInterviewDate())
-                .joiningDate(referral.getJoiningDate())
-                .createdAt(referral.getCreatedAt())
-                .updatedAt(referral.getUpdatedAt())
                 .build();
     }
 

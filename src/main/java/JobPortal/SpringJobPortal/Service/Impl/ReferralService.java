@@ -1,8 +1,10 @@
 package JobPortal.SpringJobPortal.Service.Impl;
 
+import JobPortal.SpringJobPortal.Dto.ReferralDetailResponseDto;
 import JobPortal.SpringJobPortal.Dto.ReferralRequestDto;
 import JobPortal.SpringJobPortal.Dto.ReferralResponseDto;
 import JobPortal.SpringJobPortal.Dto.ReferralStatusRequestDto;
+import JobPortal.SpringJobPortal.Dto.ReferralSummaryResponseDto;
 import jakarta.validation.Valid;
 
 import java.util.List;
@@ -11,9 +13,9 @@ public interface ReferralService {
 
     ReferralResponseDto createReferral(Long applicationId, @Valid ReferralRequestDto referralRequestDto);
 
-    ReferralResponseDto getReferralById(Long id);
+    ReferralDetailResponseDto getReferralById(Long id);
 
-    List<ReferralResponseDto> getAllReferrals();
+    List<ReferralSummaryResponseDto> getAllReferrals();
 
     List<ReferralResponseDto> getReferralsByJobApplication(Long applicationId);
 

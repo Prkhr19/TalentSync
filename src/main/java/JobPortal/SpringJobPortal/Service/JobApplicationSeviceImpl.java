@@ -18,7 +18,8 @@ import JobPortal.SpringJobPortal.Entity.User;
 import JobPortal.SpringJobPortal.Repository.CandidateProfileRepository;
 import JobPortal.SpringJobPortal.Repository.JobApplicationRepository;
 import JobPortal.SpringJobPortal.Service.Impl.JobApplicationSevice;
-import jakarta.persistence.EntityNotFoundException;
+import JobPortal.SpringJobPortal.Exception.InvalidApplicationStatusException;
+import JobPortal.SpringJobPortal.Exception.ResourceNotFoundException;
 import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -90,7 +91,7 @@ public class JobApplicationSeviceImpl implements JobApplicationSevice {
     @Override
     public List<JobApplicationResponseDto> getApplicationsByJobId(Long jobId) {
         if (!jobRepository.existsById(jobId)) {
-            throw new EntityNotFoundException("Job not found with id: " + jobId);
+            throw new ResourceNotFoundException("Job not found with id: " + jobId);
         }
 
         List<JobApplication> applications = jobApplicationRepository.findAllByJobId(jobId);
@@ -112,8 +113,13 @@ public class JobApplicationSeviceImpl implements JobApplicationSevice {
             @Valid JobApplicationStatusRequestDto requestDto) {
         validateAdminAccess();
 
+        if (requestDto.getStatus() == ApplicationStatus.REFERRED) {
+            throw new InvalidApplicationStatusException(
+                    "Application status REFERRED can only be set by creating a referral.");
+        }
+
         JobApplication application = jobApplicationRepository.findById(applicationId)
-                .orElseThrow(() -> new BadCredentialsException("Job application not found"));
+                .orElseThrow(() -> new ResourceNotFoundException("Job application not found"));
 
         application.setStatus(requestDto.getStatus());
         JobApplication updatedApplication = jobApplicationRepository.save(application);

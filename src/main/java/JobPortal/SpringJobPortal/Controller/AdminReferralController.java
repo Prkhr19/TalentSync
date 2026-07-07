@@ -1,8 +1,10 @@
 package JobPortal.SpringJobPortal.Controller;
 
+import JobPortal.SpringJobPortal.Dto.ReferralDetailResponseDto;
 import JobPortal.SpringJobPortal.Dto.ReferralRequestDto;
 import JobPortal.SpringJobPortal.Dto.ReferralResponseDto;
 import JobPortal.SpringJobPortal.Dto.ReferralStatusRequestDto;
+import JobPortal.SpringJobPortal.Dto.ReferralSummaryResponseDto;
 import JobPortal.SpringJobPortal.Service.Impl.ReferralService;
 import io.swagger.v3.oas.annotations.Operation;
 import jakarta.validation.Valid;
@@ -38,15 +40,15 @@ public class AdminReferralController {
 
     @Operation(summary = "Get all referrals")
     @GetMapping("/referrals")
-    public ResponseEntity<List<ReferralResponseDto>> getAllReferrals() {
-        List<ReferralResponseDto> response = referralService.getAllReferrals();
+    public ResponseEntity<List<ReferralSummaryResponseDto>> getAllReferrals() {
+        List<ReferralSummaryResponseDto> response = referralService.getAllReferrals();
         return ResponseEntity.ok(response);
     }
 
     @Operation(summary = "Get referral by id")
     @GetMapping("/referrals/{id}")
-    public ResponseEntity<ReferralResponseDto> getReferralById(@PathVariable Long id) {
-        ReferralResponseDto response = referralService.getReferralById(id);
+    public ResponseEntity<ReferralDetailResponseDto> getReferralById(@PathVariable Long id) {
+        ReferralDetailResponseDto response = referralService.getReferralById(id);
         return ResponseEntity.ok(response);
     }
 
@@ -60,6 +62,7 @@ public class AdminReferralController {
     }
 
     @Operation(summary = "Update referral status")
+    @PatchMapping("/referrals/{id}/status")
     @PutMapping("/referrals/{id}/status")
     public ResponseEntity<ReferralResponseDto> updateReferralStatus(
             @PathVariable Long id,
