@@ -26,6 +26,20 @@ public class CandidateProfileServiceImpl implements CandidateProfileService {
 
 
     @Override
+    public CandidateProfileReqDto getProfile() {
+        User user = currentUserService.getCurrentUser();
+
+        if (user.getRole() != RoleType.CANDIDATE) {
+            throw new AccessDeniedException("Unauthorized access");
+        }
+
+        CandidateProfile candidateProfile = candidateProfileRepository.findByUserUserId(user.getUserId())
+                .orElseThrow(() -> new UsernameNotFoundException("Candidate profile not found"));
+
+        return mapToProfileDto(candidateProfile);
+    }
+
+    @Override
     public CandidateProfileReqDto updateProfile(CandidateProfileReqDto candidateProfileReqDto) {
 
         User user = currentUserService.getCurrentUser();
@@ -41,7 +55,6 @@ public class CandidateProfileServiceImpl implements CandidateProfileService {
         candidateProfile.setSkills(candidateProfileReqDto.getSkills());
         candidateProfile.setLocation(candidateProfileReqDto.getLocation());
         candidateProfile.setExperience(candidateProfileReqDto.getExperience());
-
         candidateProfile.setLinkedInUrl(candidateProfileReqDto.getLinkedInUrl());
         candidateProfile.setTotalExperience(candidateProfileReqDto.getTotalExperience());
         candidateProfile.setCurrentCompany(candidateProfileReqDto.getCurrentCompany());
@@ -54,7 +67,10 @@ public class CandidateProfileServiceImpl implements CandidateProfileService {
 
         candidateProfileRepository.save(candidateProfile);
 
+        return mapToProfileDto(candidateProfile);
+    }
 
+    private CandidateProfileReqDto mapToProfileDto(CandidateProfile candidateProfile) {
         return CandidateProfileReqDto.builder()
                 .name(candidateProfile.getName())
                 .phoneNo(candidateProfile.getPhoneNo())

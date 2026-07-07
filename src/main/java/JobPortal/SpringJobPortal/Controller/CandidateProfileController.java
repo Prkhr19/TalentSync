@@ -22,6 +22,12 @@ public class CandidateProfileController {
     private final JobServices jobServices;
 
 
+    @Operation(summary = "Get candidate profile")
+    @GetMapping("/profile")
+    public ResponseEntity<CandidateProfileReqDto> getProfile() {
+        return ResponseEntity.ok(candidateProfileService.getProfile());
+    }
+
     @Operation(summary = "Candidate update Profile before applying")
     @PutMapping(value = "/profile", consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<CandidateProfileReqDto> updateProfile(

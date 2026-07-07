@@ -7,6 +7,8 @@ import java.util.List;
 
 public interface CandidateProfileService {
 
+    CandidateProfileReqDto getProfile();
+
     CandidateProfileReqDto updateProfile(CandidateProfileReqDto candidateProfileReqDto);
 
     List<CandidateApplicationResposeDto> myApplication();
