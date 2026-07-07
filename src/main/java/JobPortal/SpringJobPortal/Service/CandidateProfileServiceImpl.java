@@ -41,7 +41,7 @@ public class CandidateProfileServiceImpl implements CandidateProfileService {
         candidateProfile.setSkills(candidateProfileReqDto.getSkills());
         candidateProfile.setLocation(candidateProfileReqDto.getLocation());
         candidateProfile.setExperience(candidateProfileReqDto.getExperience());
-        candidateProfile.setEducation(candidateProfileReqDto.getEducation());
+
         candidateProfile.setLinkedInUrl(candidateProfileReqDto.getLinkedInUrl());
         candidateProfile.setTotalExperience(candidateProfileReqDto.getTotalExperience());
         candidateProfile.setCurrentCompany(candidateProfileReqDto.getCurrentCompany());
@@ -62,7 +62,6 @@ public class CandidateProfileServiceImpl implements CandidateProfileService {
                 .location(candidateProfile.getLocation())
                 .experience(candidateProfile.getExperience())
                 .skills(candidateProfile.getSkills())
-                .education(candidateProfile.getEducation())
                 .linkedInUrl(candidateProfile.getLinkedInUrl())
                 .totalExperience(candidateProfile.getTotalExperience())
                 .currentCompany(candidateProfile.getCurrentCompany())
