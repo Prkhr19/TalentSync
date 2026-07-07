@@ -9,7 +9,6 @@ import JobPortal.SpringJobPortal.Service.Impl.ReferralService;
 import io.swagger.v3.oas.annotations.Operation;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -17,43 +16,27 @@ import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/admin")
+@RequestMapping("/admin/referrals")
 public class AdminReferralController {
 
     private final ReferralService referralService;
 
-    @Operation(summary = "Create referral for a job application")
-    @PostMapping("/applications/{applicationId}/referrals")
-    public ResponseEntity<ReferralResponseDto> createReferral(
-            @PathVariable Long applicationId,
-            @Valid @RequestBody ReferralRequestDto referralRequestDto) {
-        ReferralResponseDto response = referralService.createReferral(applicationId, referralRequestDto);
-        return ResponseEntity.status(HttpStatus.CREATED).body(response);
-    }
-
-    @Operation(summary = "Get referrals by job application")
-    @GetMapping("/applications/{applicationId}/referrals")
-    public ResponseEntity<List<ReferralResponseDto>> getReferralsByJobApplication(@PathVariable Long applicationId) {
-        List<ReferralResponseDto> response = referralService.getReferralsByJobApplication(applicationId);
-        return ResponseEntity.ok(response);
-    }
-
     @Operation(summary = "Get all referrals")
-    @GetMapping("/referrals")
+    @GetMapping
     public ResponseEntity<List<ReferralSummaryResponseDto>> getAllReferrals() {
         List<ReferralSummaryResponseDto> response = referralService.getAllReferrals();
         return ResponseEntity.ok(response);
     }
 
     @Operation(summary = "Get referral by id")
-    @GetMapping("/referrals/{id}")
+    @GetMapping("/{id}")
     public ResponseEntity<ReferralDetailResponseDto> getReferralById(@PathVariable Long id) {
         ReferralDetailResponseDto response = referralService.getReferralById(id);
         return ResponseEntity.ok(response);
     }
 
     @Operation(summary = "Update referral")
-    @PutMapping("/referrals/{id}")
+    @PutMapping("/{id}")
     public ResponseEntity<ReferralResponseDto> updateReferral(
             @PathVariable Long id,
             @Valid @RequestBody ReferralRequestDto referralRequestDto) {
@@ -62,8 +45,8 @@ public class AdminReferralController {
     }
 
     @Operation(summary = "Update referral status")
-    @PatchMapping("/referrals/{id}/status")
-    @PutMapping("/referrals/{id}/status")
+    @PatchMapping("/{id}/status")
+    @PutMapping("/{id}/status")
     public ResponseEntity<ReferralResponseDto> updateReferralStatus(
             @PathVariable Long id,
             @Valid @RequestBody ReferralStatusRequestDto referralStatusRequestDto) {
@@ -72,7 +55,7 @@ public class AdminReferralController {
     }
 
     @Operation(summary = "Delete referral")
-    @DeleteMapping("/referrals/{id}")
+    @DeleteMapping("/{id}")
     public ResponseEntity<ReferralResponseDto> deleteReferral(@PathVariable Long id) {
         ReferralResponseDto response = referralService.deleteReferral(id);
         return ResponseEntity.ok(response);
