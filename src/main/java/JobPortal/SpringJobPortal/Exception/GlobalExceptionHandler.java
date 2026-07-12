@@ -2,6 +2,7 @@ package JobPortal.SpringJobPortal.Exception;
 
 import JobPortal.SpringJobPortal.Exception.InvalidApplicationStatusException;
 import JobPortal.SpringJobPortal.Exception.ResourceNotFoundException;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.BadCredentialsException;
@@ -84,6 +85,15 @@ public class GlobalExceptionHandler {
     public ResponseEntity<Map<String, String>> handleInvalidApplicationStatus(InvalidApplicationStatusException ex) {
         Map<String, String> error = new HashMap<>();
         error.put("message", ex.getMessage());
+
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(error);
+    }
+
+    @ExceptionHandler(DataIntegrityViolationException.class)
+    public ResponseEntity<Map<String, String>> handleDataIntegrityViolation(DataIntegrityViolationException ex) {
+        Map<String, String> error = new HashMap<>();
+        error.put("error", "Database constraint violation while saving referral");
+        error.put("message", ex.getMostSpecificCause().getMessage());
 
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(error);
     }
